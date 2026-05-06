@@ -1,7 +1,7 @@
-use std::env;
-use std::process;
+use serde::{self, Deserialize, Serialize};
+use std::{env, error::Error, fs, process};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct LogEntry {
     id: u32,
     message: String,
@@ -10,7 +10,7 @@ struct LogEntry {
 fn main() {
     let args: Vec<String> = env::args().collect();
     //  let args = dbg!(args);
-    let mut logs: Vec<LogEntry> = Vec::new();
+    let mut logs: Vec<LogEntry> = load_logs();
 
     let command = match args.get(1) {
         Some(val) => val.as_str(),
@@ -27,29 +27,62 @@ fn main() {
             if length >= 3 {
                 let message_parts = &args[2..];
                 handle_add(&mut logs, message_parts);
+
+                if let Err(e) = save_logs(&logs) {
+                  eprint!("Failed to save logs: {}", e);
+                  process::exit(1);
+                };
             } else {
                 eprintln!("Missing message for 'add' command");
                 process::exit(1);
             }
         }
 
-        "list" => handle_list(&logs),
+        "list" => {
+            if logs.is_empty() {
+                println!("no logs yet!");
+                return;
+            }
+            handle_list(&logs)
+        }
 
         _ => eprintln!("Unknown command: {}", command),
     }
-
-    println!("{:?}", logs)
 }
 
 fn handle_add(logs: &mut Vec<LogEntry>, args: &[String]) {
     let id = logs.len() as u32 + 1;
     let message = args.join(" ");
-    println!("Added log: {}", &message);
+     println!("Added log: {}", &message);
     logs.push(LogEntry { id, message });
 }
 
 fn handle_list(logs: &[LogEntry]) {
-   for log in logs{
-      println!("{}. {}", log.id, log.message)
-   }
+    for log in logs {
+        println!("{}. {}", log.id, log.message)
+    }
+}
+
+fn load_logs() -> Vec<LogEntry> {
+    let contents = fs::read_to_string("devlog.json");
+
+    let parsed = match contents {
+        Ok(val) => match serde_json::from_str(val.as_str()) {
+            Ok(logs) => logs,
+            Err(e) => {
+               eprintln!("Failed to parse logs: {}", e);
+               Vec::new()
+            }
+        },
+
+        Err(_) => return Vec::new(),
+    };
+
+    parsed
+}
+
+fn save_logs(logs: &[LogEntry]) -> Result<(), Box<dyn Error>> {
+    let json = serde_json::to_string_pretty(logs)?;
+    fs::write("devlog.json", json)?;
+    Ok(())
 }
