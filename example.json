@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "message": "hello world",
+    "tags": []
+  },
+  {
+    "id": 2,
+    "message": "learning rust",
+    "tags": [
+      "rust"
+    ]
+  },
+  {
+    "id": 3,
+    "message": "solving leetcode in rust",
+    "tags": [
+      "rust",
+      "DSA"
+    ]
+  }
+]
