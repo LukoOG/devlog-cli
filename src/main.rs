@@ -1,12 +1,12 @@
-use serde::{self, Deserialize, Serialize};
-use std::{env, error::Error, fs, process};
+use std::{env, process};
 
-#[derive(Debug, Serialize, Deserialize)]
-struct LogEntry {
-    id: u32,
-    message: String,
-    tags: Vec<String>,
-}
+mod commands;
+mod models;
+mod storage;
+
+use commands::*;
+use models::LogEntry;
+use storage::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -62,63 +62,4 @@ fn main() {
 
         _ => eprintln!("Unknown command: {}", command),
     }
-}
-
-fn handle_add(logs: &mut Vec<LogEntry>, args: &[String]) {
-    let id = logs.len() as u32 + 1;
-    let mut message_parts: Vec<&str> = Vec::new();
-    let mut tags: Vec<String> = Vec::new();
-    let mut args = args.iter();
-
-    while let Some(c) = args.next() {
-        if c == "--tag" {
-            if let Some(next) = args.next() {
-                tags.push(next.clone());
-            };
-        } else {
-            message_parts.push(c);
-        }
-    }
-
-    let message = message_parts.join(" ");
-    println!("Added log: {}", &message);
-    logs.push(LogEntry { id, message, tags });
-}
-
-fn handle_list(logs: &[LogEntry], tag: Option<&str>) {
-    match tag {
-        Some(t) => {
-            logs.iter()
-                .filter(|&log| log.tags.iter().any(|tag| tag == t))
-                .for_each(|log| println!("{}. {}", log.id, log.message));
-        }
-        None => {
-            logs.iter()
-                .for_each(|log| println!("{}. {}", log.id, log.message));
-        }
-    }
-}
-
-fn load_logs() -> Vec<LogEntry> {
-    let contents = fs::read_to_string("devlog.json");
-
-    let parsed = match contents {
-        Ok(val) => match serde_json::from_str(val.as_str()) {
-            Ok(logs) => logs,
-            Err(e) => {
-                eprintln!("Failed to parse logs: {}", e);
-                Vec::new()
-            }
-        },
-
-        Err(_) => return Vec::new(),
-    };
-
-    parsed
-}
-
-fn save_logs(logs: &[LogEntry]) -> Result<(), Box<dyn Error>> {
-    let json = serde_json::to_string_pretty(logs)?;
-    fs::write("devlog.json", json)?;
-    Ok(())
 }
