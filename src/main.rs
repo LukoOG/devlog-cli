@@ -1,21 +1,55 @@
 use std::env;
+use std::process;
+
+#[derive(Debug)]
+struct LogEntry {
+    id: u32,
+    message: String,
+}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let args = dbg!(args);
+    //  let args = dbg!(args);
+    let mut logs: Vec<LogEntry> = Vec::new();
 
-    let command = &args[1][..];
+    let command = match args.get(1) {
+        Some(val) => val.as_str(),
+        None => {
+            eprintln!("No command given");
+            process::exit(1)
+        }
+    };
+
     match command {
         "add" => {
-            if !args.get(2).is_none() {
-                println!("added {}", args[2]);
+            let length = args.len();
+            // print!("{}",length);
+            if length >= 3 {
+                let message_parts = &args[2..];
+                handle_add(&mut logs, message_parts);
             } else {
-               eprintln!("no arguemnts provided for add")
+                eprintln!("Missing message for 'add' command");
+                process::exit(1);
             }
         }
 
-        "list" => println!("list all"),
+        "list" => handle_list(&logs),
 
-        _ => eprintln!("Unidentified command")
+        _ => eprintln!("Unknown command: {}", command),
     }
+
+    println!("{:?}", logs)
+}
+
+fn handle_add(logs: &mut Vec<LogEntry>, args: &[String]) {
+    let id = logs.len() as u32 + 1;
+    let message = args.join(" ");
+    println!("Added log: {}", &message);
+    logs.push(LogEntry { id, message });
+}
+
+fn handle_list(logs: &[LogEntry]) {
+   for log in logs{
+      println!("{}. {}", log.id, log.message)
+   }
 }
