@@ -1,65 +1,34 @@
 use std::{env, process};
 
+mod cli;
 mod commands;
 mod models;
 mod storage;
 
-use commands::*;
+use cli::{Command, parse_args};
+use commands::{handle_add, handle_list};
 use models::LogEntry;
-use storage::*;
+use storage::{load_logs, save_logs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    //  let args = dbg!(args);
-    let mut logs: Vec<LogEntry> = load_logs();
 
-    let command = match args.get(1) {
-        Some(val) => val.as_str(),
-        None => {
-            eprintln!("No command given");
-            process::exit(1)
-        }
-    };
+    let command = parse_args(&args);
+    let mut logs= load_logs();
 
     match command {
-        "add" => {
-            let length = args.len();
-            // print!("{}",length);
-            if length >= 3 {
-                let message_parts = &args[2..];
-                handle_add(&mut logs, message_parts);
-
-                if let Err(e) = save_logs(&logs) {
-                    eprint!("Failed to save logs: {}", e);
-                    process::exit(1);
-                };
-            } else {
-                eprintln!("Missing message for 'add' command");
-                process::exit(1);
-            }
+        Command::Add { message, tags } => {
+            handle_add(&mut logs, message, tags);
+            if let Err(e) = save_logs(&logs) {
+                eprintln!("Failed to save logs: {}", e);
+                process::exit(1)
+            };
         }
 
-        "list" => {
-            if logs.is_empty() {
-                println!("no logs yet!");
-                return;
-            }
-            let args = &args[2..];
-            let mut tag = None;
-            let mut index = 0;
+        Command::List { tag } => handle_list(&logs, tag),
 
-            while index < args.len() {
-                if args[index] == "--tag" {
-                    if let Some(t) = args.get(index + 1) {
-                        tag = Some(t.as_str());
-                        break;
-                    }
-                }
-                index += 1
-            }
-            handle_list(&logs, tag)
-        }
+        // Command::Unknown(command) => eprintln!("Unknown command: {}", command),
 
-        _ => eprintln!("Unknown command: {}", command),
+        // Command::None => eprintln!("No command provided"),
     }
 }

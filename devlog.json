@@ -20,5 +20,25 @@
     "tags": [
       "rust"
     ]
+  },
+  {
+    "id": 5,
+    "message": "separated into modules",
+    "tags": []
+  },
+  {
+    "id": 6,
+    "message": "getting the hang of rust",
+    "tags": [
+      "rust"
+    ]
+  },
+  {
+    "id": 7,
+    "message": "getting the hang of rust again",
+    "tags": [
+      "rust",
+      "systems"
+    ]
   }
 ]
