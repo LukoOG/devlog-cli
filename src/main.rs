@@ -7,7 +7,6 @@ mod storage;
 
 use cli::{Command, parse_args};
 use commands::{handle_add, handle_list};
-use models::LogEntry;
 use storage::{load_logs, save_logs};
 
 fn main() {

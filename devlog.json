@@ -6,36 +6,14 @@
   },
   {
     "id": 2,
-    "message": "building cli tool",
-    "tags": []
-  },
-  {
-    "id": 3,
-    "message": "eating",
-    "tags": []
-  },
-  {
-    "id": 4,
     "message": "learning rust",
     "tags": [
       "rust"
     ]
   },
   {
-    "id": 5,
-    "message": "separated into modules",
-    "tags": []
-  },
-  {
-    "id": 6,
-    "message": "getting the hang of rust",
-    "tags": [
-      "rust"
-    ]
-  },
-  {
-    "id": 7,
-    "message": "getting the hang of rust again",
+    "id": 3,
+    "message": "learning rust again",
     "tags": [
       "rust",
       "systems"
