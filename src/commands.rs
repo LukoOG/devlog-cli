@@ -16,6 +16,13 @@ pub enum Command {
 
 pub fn handle_add(logs: &mut Vec<LogEntry>, message: Vec<String>, tags: Vec<String>) {
     let id = logs.len() as u32 + 1;
+
+    //catches where length >= 3 but no message provided 
+    //from cli.rs
+    if message.is_empty(){
+        eprintln!("No arguments provided for 'add'"); 
+        return
+    }
     let message = message.join(" ");
     println!("Added log: {}", &message);
     logs.push(LogEntry { id, message, tags });
