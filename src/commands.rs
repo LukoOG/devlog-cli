@@ -42,7 +42,8 @@ pub fn handle_list(logs: &[LogEntry], tags: Vec<String>) {
             .for_each(|log| println!("{}. {}", log.id, log.message));
     } else {
         logs.iter()
-            .filter(|&log| log.tags.iter().any(|tag| tags.contains(tag)))
+            // .filter(|&log| log.tags.iter().any(|tag| tags.contains(tag)))
+            .filter(|&log| tags.iter().any(|tag| log.tags.iter().any(|t| t == tag)))
             .for_each(|log| println!("{}. {}", log.id, log.message));
     }
 }

@@ -13,10 +13,17 @@
   },
   {
     "id": 3,
-    "message": "solving leetcode in rust",
+    "message": "MEG 323",
     "tags": [
-      "rust",
-      "DSA"
+      "school",
+      "pain"
+    ]
+  },
+  {
+    "id": 4,
+    "message": "learned borrow checker",
+    "tags": [
+      "rust"
     ]
   }
 ]
