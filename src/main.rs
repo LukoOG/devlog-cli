@@ -44,18 +44,20 @@ fn main() {
                 println!("no logs yet!");
                 return;
             }
-            let mut tag = String::new();
+            let args = &args[2..];
+            let mut tag = None;
             let mut index = 0;
 
             while index < args.len() {
                 if args[index] == "--tag" {
                     if let Some(t) = args.get(index + 1) {
-                        tag = t.to_string();
+                        tag = Some(t.as_str());
+                        break;
                     }
                 }
                 index += 1
             }
-            handle_list(&logs, &tag)
+            handle_list(&logs, tag)
         }
 
         _ => eprintln!("Unknown command: {}", command),
@@ -79,17 +81,21 @@ fn handle_add(logs: &mut Vec<LogEntry>, args: &[String]) {
     }
 
     let message = message_parts.join(" ");
+    println!("Added log: {}", &message);
     logs.push(LogEntry { id, message, tags });
 }
 
-fn handle_list(logs: &[LogEntry], tag: &str) {
-    if !tag.is_empty() {
-        logs.iter()
-            .for_each(|log| println!("{}. {}", log.id, log.message));
-    } else {
-        logs.iter()
-            .filter(|&x| x.tags.contains(&tag.to_string()))
-            .for_each(|log| println!("{}. {}", log.id, log.message));
+fn handle_list(logs: &[LogEntry], tag: Option<&str>) {
+    match tag {
+        Some(t) => {
+            logs.iter()
+                .filter(|&log| log.tags.iter().any(|tag| tag == t))
+                .for_each(|log| println!("{}. {}", log.id, log.message));
+        }
+        None => {
+            logs.iter()
+                .for_each(|log| println!("{}. {}", log.id, log.message));
+        }
     }
 }
 
