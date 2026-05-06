@@ -101,6 +101,7 @@ src/
 ## Notes
 
 * Logs are stored locally in a `devlog.json` file
+* An example of the file's structure is shown in example.json
 * This is a learning project focused on Rust fundamentals, not production-grade tooling
 
 ---
