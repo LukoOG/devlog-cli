@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "message": "hello world",
+    "tags": []
+  },
+  {
+    "id": 2,
+    "message": "building cli tool",
+    "tags": []
+  },
+  {
+    "id": 3,
+    "message": "eating",
+    "tags": []
+  },
+  {
+    "id": 4,
+    "message": "learning rust",
+    "tags": [
+      "rust"
+    ]
+  }
+]
