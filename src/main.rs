@@ -5,6 +5,7 @@ use std::{env, error::Error, fs, process};
 struct LogEntry {
     id: u32,
     message: String,
+    tags: Vec<String>,
 }
 
 fn main() {
@@ -29,8 +30,8 @@ fn main() {
                 handle_add(&mut logs, message_parts);
 
                 if let Err(e) = save_logs(&logs) {
-                  eprint!("Failed to save logs: {}", e);
-                  process::exit(1);
+                    eprint!("Failed to save logs: {}", e);
+                    process::exit(1);
                 };
             } else {
                 eprintln!("Missing message for 'add' command");
@@ -43,7 +44,18 @@ fn main() {
                 println!("no logs yet!");
                 return;
             }
-            handle_list(&logs)
+            let mut tag = String::new();
+            let mut index = 0;
+
+            while index < args.len() {
+                if args[index] == "--tag" {
+                    if let Some(t) = args.get(index + 1) {
+                        tag = t.to_string();
+                    }
+                }
+                index += 1
+            }
+            handle_list(&logs, &tag)
         }
 
         _ => eprintln!("Unknown command: {}", command),
@@ -52,14 +64,32 @@ fn main() {
 
 fn handle_add(logs: &mut Vec<LogEntry>, args: &[String]) {
     let id = logs.len() as u32 + 1;
-    let message = args.join(" ");
-     println!("Added log: {}", &message);
-    logs.push(LogEntry { id, message });
+    let mut message_parts: Vec<&str> = Vec::new();
+    let mut tags: Vec<String> = Vec::new();
+    let mut args = args.iter();
+
+    while let Some(c) = args.next() {
+        if c == "--tag" {
+            if let Some(next) = args.next() {
+                tags.push(next.clone());
+            };
+        } else {
+            message_parts.push(c);
+        }
+    }
+
+    let message = message_parts.join(" ");
+    logs.push(LogEntry { id, message, tags });
 }
 
-fn handle_list(logs: &[LogEntry]) {
-    for log in logs {
-        println!("{}. {}", log.id, log.message)
+fn handle_list(logs: &[LogEntry], tag: &str) {
+    if !tag.is_empty() {
+        logs.iter()
+            .for_each(|log| println!("{}. {}", log.id, log.message));
+    } else {
+        logs.iter()
+            .filter(|&x| x.tags.contains(&tag.to_string()))
+            .for_each(|log| println!("{}. {}", log.id, log.message));
     }
 }
 
@@ -70,8 +100,8 @@ fn load_logs() -> Vec<LogEntry> {
         Ok(val) => match serde_json::from_str(val.as_str()) {
             Ok(logs) => logs,
             Err(e) => {
-               eprintln!("Failed to parse logs: {}", e);
-               Vec::new()
+                eprintln!("Failed to parse logs: {}", e);
+                Vec::new()
             }
         },
 
