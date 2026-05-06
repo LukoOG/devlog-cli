@@ -1,4 +1,4 @@
-enum Command {
-   Add { message: String },
-   List
-}
+// enum Command {
+//    Add { message: String },
+//    List
+// }
