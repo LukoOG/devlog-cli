@@ -23,19 +23,9 @@ pub fn handle_add(logs: &mut Vec<LogEntry>, message: Vec<String>, tags: Vec<Stri
 
 pub fn handle_list(logs: &[LogEntry], tags: Vec<String>) {
     if logs.is_empty() {
-        println!("No logs yet!")
+        println!("No logs yet!");
+        return
     }
-    // match tag {
-    //     Some(t) => {
-    //         logs.iter()
-    //             .filter(|&log| log.tags.iter().any(|tag| tag == &t))
-    //             .for_each(|log| println!("{}. {}", log.id, log.message));
-    //     }
-    //     None => {
-    //         logs.iter()
-    //             .for_each(|log| println!("{}. {}", log.id, log.message));
-    //     }
-    // }
 
     if tags.is_empty() {
         logs.iter()
@@ -43,7 +33,7 @@ pub fn handle_list(logs: &[LogEntry], tags: Vec<String>) {
     } else {
         logs.iter()
             // .filter(|&log| log.tags.iter().any(|tag| tags.contains(tag)))
-            .filter(|&log| tags.iter().any(|tag| log.tags.iter().any(|t| t == tag)))
+            .filter(|&log| tags.iter().all(|tag| log.tags.iter().any(|t| t == tag)))
             .for_each(|log| println!("{}. {}", log.id, log.message));
     }
 }
