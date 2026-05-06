@@ -1,5 +1,5 @@
 use crate::models::LogEntry;
-use std::{fs, error::Error};
+use std::{error::Error, fs};
 
 pub fn load_logs() -> Vec<LogEntry> {
     let contents = fs::read_to_string("devlog.json");
@@ -13,7 +13,10 @@ pub fn load_logs() -> Vec<LogEntry> {
             }
         },
 
-        Err(_) => return Vec::new(),
+        Err(e) => {
+            eprintln!("Failed to read file: {}", e);
+            Vec::new()
+        }
     };
 
     parsed

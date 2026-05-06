@@ -8,6 +8,9 @@ pub fn handle_add(logs: &mut Vec<LogEntry>, message: Vec<String>, tags: Vec<Stri
 }
 
 pub fn handle_list(logs: &[LogEntry], tag: Option<String>) {
+    if logs.is_empty() {
+        println!("No logs yet!")
+    }
     match tag {
         Some(t) => {
             logs.iter()
