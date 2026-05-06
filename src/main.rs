@@ -5,9 +5,11 @@ mod commands;
 mod models;
 mod storage;
 
-use cli::{Command, parse_args};
-use commands::{handle_add, handle_list};
+use cli::{parse_args};
+use commands::{Command, handle_add, handle_list};
 use storage::{load_logs, save_logs};
+
+use crate::commands::handle_help;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -24,7 +26,9 @@ fn main() {
             };
         }
 
-        Command::List { tag } => handle_list(&logs, tag),
+        Command::List { tags } => handle_list(&logs, tags),
+
+        Command::Help => handle_help(),
 
         // Command::Unknown(command) => eprintln!("Unknown command: {}", command),
 

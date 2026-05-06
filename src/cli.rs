@@ -1,17 +1,5 @@
 use std::process;
-
-pub enum Command {
-    Add {
-        message: Vec<String>,
-        tags: Vec<String>,
-    },
-    List {
-        tag: Option<String>,
-    },
-    // Unknown(String),
-
-    // None,
-}
+use crate::commands::Command;
 
 pub fn parse_args(args: &[String]) -> Command {
     let length = args.len();
@@ -50,20 +38,23 @@ pub fn parse_args(args: &[String]) -> Command {
         }
 
         "list" => {
-            let mut tag = None;
+            let mut tags = vec![];
             let mut iter = args[2..].iter();
 
             while let Some(arg) = iter.next() {
                 if arg == "--tag" {
                     if let Some(next) = iter.next() {
-                        tag = Some(next.clone());
-                        break;
+                        tags.push(next.clone());
                     }
                 }
             }
 
-            Command::List { tag }
-        }
+            Command::List { tags }
+        },
+
+        "help" => {
+            Command::Help
+        },
 
         _ => {
             eprintln!("Unknown command {}", command);
