@@ -66,6 +66,14 @@ devlog list --tag rust --tag cli
 
 ---
 
+### Clear all logs
+
+```bash
+devlog clear
+```
+
+---
+
 ### Help
 
 ```bash
