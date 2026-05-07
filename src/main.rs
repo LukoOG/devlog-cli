@@ -6,10 +6,8 @@ mod models;
 mod storage;
 
 use cli::{parse_args};
-use commands::{Command, handle_add, handle_list};
-use storage::{load_logs, save_logs};
-
-use crate::commands::handle_help;
+use commands::{Command, handle_add, handle_list, handle_help};
+use storage::{load_logs, save_logs, delete_logs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -27,6 +25,15 @@ fn main() {
         }
 
         Command::List { tags } => handle_list(&logs, tags),
+
+        Command::Clear => {
+            if let Err(e) = delete_logs() {
+                eprintln!("Failed to delete logs: {}", e);
+                process::exit(1)
+            } else {
+                println!("Cleared all logs!")
+            };
+        },
 
         Command::Help => handle_help(),
 

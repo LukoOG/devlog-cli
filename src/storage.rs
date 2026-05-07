@@ -27,3 +27,8 @@ pub fn save_logs(logs: &[LogEntry]) -> Result<(), Box<dyn Error>> {
     fs::write("devlog.json", json)?;
     Ok(())
 }
+
+pub fn delete_logs() -> Result<(), Box<dyn Error>> {
+    fs::remove_file("devlog.json")?;
+    Ok(())
+}

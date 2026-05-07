@@ -9,6 +9,7 @@ pub enum Command {
         // tag: Option<String>, simple implementation
         tags: Vec<String>,
     },
+    Clear,
     Help, // Unknown(String),
 
           // None,

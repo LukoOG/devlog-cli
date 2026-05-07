@@ -52,6 +52,10 @@ pub fn parse_args(args: &[String]) -> Command {
             Command::List { tags }
         },
 
+        "clear" => {
+            Command::Clear
+        },
+
         "help" => {
             Command::Help
         },
