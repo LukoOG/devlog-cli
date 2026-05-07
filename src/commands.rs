@@ -51,6 +51,7 @@ pub fn handle_help() {
     println!("USAGE:");
     println!("  devlog add <message> [--tag <tag>...]");
     println!("  devlog list [--tag <tag>...]");
+    println!("  devlog clear");
     println!("  devlog help\n");
 
     println!("EXAMPLES:");
